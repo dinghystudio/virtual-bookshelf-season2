@@ -4,6 +4,7 @@ import { InfoIcon } from "lucide-react";
 import { redirect } from "next/navigation";
 
 export default async function ProtectedPage() {
+  // @TODO: Extract this into a sub-layout
   const supabase = await createClient();
 
   const {
@@ -14,8 +15,11 @@ export default async function ProtectedPage() {
     return redirect("/sign-in");
   }
 
+  const { data: books } = await supabase.from("books").select();
+
   return (
     <div className="flex-1 w-full flex flex-col gap-12">
+      <pre>{JSON.stringify(books, null, 2)}</pre>
       <div className="w-full">
         <div className="bg-accent text-sm p-3 px-5 rounded-md text-foreground flex gap-3 items-center">
           <InfoIcon size="16" strokeWidth={2} />
