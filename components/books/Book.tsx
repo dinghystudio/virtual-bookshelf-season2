@@ -1,16 +1,7 @@
 import StarRating from "@/components/StarRating";
+import { Book } from "@/services/books.service";
 
-export interface BookType {
-  id: number;
-  title: string;
-  author?: string;
-  publicationYear?: number;
-  description?: string;
-  personalNotes?: string;
-  rating?: number;
-}
-
-export function Book({ book }: { book: BookType }) {
+export function BookDisplay({ book }: { book: Book }) {
   const { title, author, publicationYear, description, personalNotes, rating } =
     book;
 
