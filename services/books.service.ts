@@ -1,6 +1,6 @@
 import { createClient } from "@/utils/supabase/server";
 
-export interface BookDTO {
+export interface GetBookDTO {
   id: number;
   title: string;
   author?: string;
@@ -9,6 +9,8 @@ export interface BookDTO {
   personal_notes?: string;
   rating?: number;
 }
+
+export type CreateBookDTO = Omit<GetBookDTO, "id">;
 
 export interface Book {
   id: number;
@@ -20,7 +22,7 @@ export interface Book {
   rating?: number;
 }
 
-function convertBookDTOToBook(bookDTO: Partial<BookDTO>): Partial<Book> {
+function convertGetBookDTOToBook(bookDTO: GetBookDTO): Book {
   return {
     id: bookDTO.id,
     title: bookDTO.title,
@@ -32,7 +34,7 @@ function convertBookDTOToBook(bookDTO: Partial<BookDTO>): Partial<Book> {
   };
 }
 
-function convertBookToBookDTO(book: Partial<Book>): Partial<BookDTO> {
+function convertBookToGetBookDTO(book: Partial<Book>): Partial<GetBookDTO> {
   return {
     id: book.id,
     title: book.title,
@@ -44,20 +46,34 @@ function convertBookToBookDTO(book: Partial<Book>): Partial<BookDTO> {
   };
 }
 
+function convertBookToCreateBookDTO(book: Omit<Book, "id">): CreateBookDTO {
+  return {
+    title: book.title,
+    author: book.author,
+    publication_year: book.publicationYear,
+    description: book.description,
+    personal_notes: book.personalNotes,
+    rating: book.rating,
+  };
+}
+
 async function getBooks(): Promise<Book[] | null> {
   const supabase = await createClient();
-  const { data } = await supabase.from("books").select().returns<BookDTO[]>();
+  const { data } = await supabase
+    .from("books")
+    .select()
+    .returns<GetBookDTO[]>();
 
-  return data ? data.map((bookDTO) => convertBookDTOToBook(bookDTO)) : null;
+  return data ? data.map((bookDTO) => convertGetBookDTOToBook(bookDTO)) : null;
 }
 
 async function createBook(book: Omit<Book, "id">): Promise<number | null> {
   const supabase = await createClient();
-  const bookDTO = convertBookToBookDTO(book);
+  const bookDTO = convertBookToCreateBookDTO(book);
   const { data } = await supabase
     .from("books")
     .insert(bookDTO)
-    .returns<BookDTO>();
+    .returns<GetBookDTO>();
 
   return data?.id || null;
 }

@@ -1,3 +1,5 @@
+import { createBookAction } from "@/app/actions/bookActions";
+import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
@@ -5,7 +7,7 @@ import { Textarea } from "@/components/ui/textarea";
 export default function CreateBookPage() {
   return (
     <div>
-      <form action="">
+      <form action={createBookAction} className="grid gap-2">
         <div>
           <Label htmlFor="title">Title</Label>
           <Input
@@ -44,6 +46,7 @@ export default function CreateBookPage() {
             name="personal-notes"
           />
         </div>
+        <Button type="submit">Create Book</Button>
       </form>
     </div>
   );
