@@ -1,5 +1,4 @@
 import { createClient } from "@/utils/supabase/server";
-import camelcaseKeys from "camelcase-keys";
 
 export interface BookDTO {
   id: number;
@@ -21,7 +20,7 @@ export interface Book {
   rating?: number;
 }
 
-function convertBookDTOToBook(bookDTO: BookDTO): Book {
+function convertBookDTOToBook(bookDTO: Partial<BookDTO>): Partial<Book> {
   return {
     id: bookDTO.id,
     title: bookDTO.title,
@@ -33,7 +32,7 @@ function convertBookDTOToBook(bookDTO: BookDTO): Book {
   };
 }
 
-function convertBookToBookDTO(book: Book): BookDTO {
+function convertBookToBookDTO(book: Partial<Book>): Partial<BookDTO> {
   return {
     id: book.id,
     title: book.title,
@@ -52,4 +51,15 @@ async function getBooks(): Promise<Book[] | null> {
   return data ? data.map((bookDTO) => convertBookDTOToBook(bookDTO)) : null;
 }
 
-export { getBooks };
+async function createBook(book: Omit<Book, "id">): Promise<number | null> {
+  const supabase = await createClient();
+  const bookDTO = convertBookToBookDTO(book);
+  const { data } = await supabase
+    .from("books")
+    .insert(bookDTO)
+    .returns<BookDTO>();
+
+  return data?.id || null;
+}
+
+export { getBooks, createBook };
