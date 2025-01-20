@@ -1,3 +1,4 @@
+import { getUser } from "@/services/auth.service";
 import { createClient } from "@/utils/supabase/server";
 
 export interface GetBookDTO {
@@ -59,9 +60,11 @@ function convertBookToCreateBookDTO(book: Omit<Book, "id">): CreateBookDTO {
 
 async function getBooks(): Promise<Book[] | null> {
   const supabase = await createClient();
+  const user = await getUser();
   const { data } = await supabase
     .from("books")
     .select()
+    .eq("created_by", user?.id)
     .returns<GetBookDTO[]>();
 
   return data ? data.map((bookDTO) => convertGetBookDTOToBook(bookDTO)) : null;
