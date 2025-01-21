@@ -70,6 +70,17 @@ async function getBooks(): Promise<Book[] | null> {
   return data ? data.map((bookDTO) => convertGetBookDTOToBook(bookDTO)) : null;
 }
 
+export async function getBookById(id: number): Promise<Book | null> {
+  const supabase = await createClient();
+  const { data } = await supabase
+    .from("books")
+    .select()
+    .eq("id", id)
+    .returns<GetBookDTO[]>();
+
+  return data ? convertGetBookDTOToBook(data[0]) : null;
+}
+
 async function createBook(book: Omit<Book, "id">): Promise<number | null> {
   const supabase = await createClient();
   const bookDTO = convertBookToCreateBookDTO(book);

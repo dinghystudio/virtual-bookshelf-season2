@@ -1,14 +1,24 @@
 import StarRating from "@/components/StarRating";
 import { Book } from "@/services/books.service";
+import Link from "next/link";
 
 export function BookDisplay({ book }: { book: Book }) {
-  const { title, author, publicationYear, description, personalNotes, rating } =
-    book;
+  const {
+    id,
+    title,
+    author,
+    publicationYear,
+    description,
+    personalNotes,
+    rating,
+  } = book;
 
   return (
     <li className="grid gap-2 content-start">
       <header className="flex gap-2 items-center justify-between">
-        <p className="font-bold text-xl">{title}</p>
+        <Link href={`/books/${id}`} className="font-bold text-xl">
+          {title}
+        </Link>
       </header>
       <p className="italic">
         {author && <span>{author}</span>}
