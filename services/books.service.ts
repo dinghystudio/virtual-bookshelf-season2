@@ -84,12 +84,15 @@ export async function getBookById(id: number): Promise<Book | null> {
 async function createBook(book: Omit<Book, "id">): Promise<number | null> {
   const supabase = await createClient();
   const bookDTO = convertBookToCreateBookDTO(book);
-  const { data } = await supabase
+  const { data, error } = await supabase
     .from("books")
     .insert(bookDTO)
-    .returns<GetBookDTO>();
+    .select("id");
 
-  return data?.id || null;
+  if (error === null && data && data.length === 1) {
+    return data[0].id;
+  }
+  return null;
 }
 
 export { getBooks, createBook };

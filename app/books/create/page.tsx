@@ -27,7 +27,7 @@ export default function CreateBookPage() {
             type="number"
             placeholder="1984"
             id="publication-year"
-            name="publication-year"
+            name="publicationYear"
           />
         </div>
         <div>
@@ -43,7 +43,7 @@ export default function CreateBookPage() {
           <Textarea
             placeholder="My thoughts about this book … "
             id="personal-notes"
-            name="personal-notes"
+            name="personalNotes"
           />
         </div>
         <Button type="submit">Create Book</Button>

@@ -1,6 +1,7 @@
 "use server";
 
 import * as booksService from "@/services/books.service";
+import { redirect } from "next/navigation";
 import { z } from "zod";
 
 const formSchema = z.object({
@@ -15,12 +16,15 @@ const formSchema = z.object({
 export async function createBookAction(formData: FormData) {
   const data = Object.fromEntries(formData.entries());
   const book = formSchema.parse(data);
-  await booksService.createBook({
+  console.log(book);
+  const id = await booksService.createBook({
     ...book,
     rating: book.rating ? parseInt(book.rating) : undefined,
     publicationYear: book.publicationYear
       ? parseInt(book.publicationYear)
       : undefined,
   });
-  // TODO: redirect to the book detail page
+  if (id) {
+    redirect(`/books/${id}`);
+  }
 }
