@@ -64,7 +64,8 @@ export default async function BookDetailPage({
             {author && <span>{author}</span>}
             {publicationYear && <time>, {publicationYear}</time>}
           </p>
-          {rating && <StarRating filledStars={rating} />}
+
+          <StarRating bookId={book.id} filledStars={rating || 0} standalone />
         </header>
 
         {description && (

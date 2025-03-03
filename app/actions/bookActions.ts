@@ -14,6 +14,11 @@ const formSchema = z.object({
   rating: z.string().optional(),
 });
 
+const updateFormSchema = z.object({
+  id: z.string(),
+  rating: z.string(),
+});
+
 const deleteFormSchema = z.object({
   id: z.string(),
 });
@@ -51,6 +56,14 @@ export async function updateBookAction(formData: FormData) {
   if (!error) {
     redirect(`/books/${book.id}`);
   }
+}
+
+export async function updateBookRatingAction(formData: FormData) {
+  const data = Object.fromEntries(formData.entries());
+  const { id: bookId, rating } = updateFormSchema.parse(data);
+  console.log(bookId, rating);
+
+  await booksService.updateBookRating(parseInt(bookId), parseInt(rating));
 }
 
 export async function deleteBookAction(formData: FormData) {

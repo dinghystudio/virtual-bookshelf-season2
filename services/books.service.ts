@@ -105,10 +105,19 @@ async function updateBook(book: Book) {
   return error;
 }
 
+async function updateBookRating(bookId: number, rating: number) {
+  const supabase = await createClient();
+  const { error } = await supabase
+    .from("books")
+    .update({ rating })
+    .eq("id", bookId);
+  return error;
+}
+
 async function deleteBook(id: number) {
   const supabase = await createClient();
   const { error } = await supabase.from("books").delete().eq("id", id);
   return error;
 }
 
-export { getBooks, createBook, updateBook, deleteBook };
+export { getBooks, createBook, updateBook, updateBookRating, deleteBook };

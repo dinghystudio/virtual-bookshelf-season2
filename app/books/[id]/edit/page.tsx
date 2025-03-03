@@ -1,4 +1,5 @@
 import { updateBookAction } from "@/app/actions/bookActions";
+import StarRating from "@/components/StarRating";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -68,6 +69,10 @@ export default async function EditBookPage({
             name="description"
             defaultValue={description}
           />
+        </div>
+        <div>
+          <Label htmlFor="rating">Rating</Label>
+          <StarRating filledStars={rating || 0} bookId={book.id} />
         </div>
         <div>
           <Label htmlFor="personal-notes">Personal Notes</Label>

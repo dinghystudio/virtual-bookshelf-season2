@@ -20,7 +20,7 @@ export function BookDisplay({ book }: { book: Book }) {
         {publicationYear && <time>, {publicationYear}</time>}
       </p>
       {description && <p className="line-clamp-1">{description}</p>}
-      {rating && <StarRating filledStars={rating} />}
+      <StarRating bookId={id} filledStars={rating || 0} standalone />
     </li>
   );
 }
