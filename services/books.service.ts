@@ -1,7 +1,7 @@
 import { getUser } from "@/services/auth.service";
 import { createClient } from "@/utils/supabase/server";
 
-export interface GetBookDTO {
+export interface BookDTO {
   id: number;
   title: string;
   author?: string;
@@ -11,7 +11,7 @@ export interface GetBookDTO {
   rating?: number;
 }
 
-export type CreateBookDTO = Omit<GetBookDTO, "id">;
+export type CreateBookDTO = Omit<BookDTO, "id">;
 
 export interface Book {
   id: number;
@@ -23,7 +23,7 @@ export interface Book {
   rating?: number;
 }
 
-function convertGetBookDTOToBook(bookDTO: GetBookDTO): Book {
+function convertGetBookDTOToBook(bookDTO: BookDTO): Book {
   return {
     id: bookDTO.id,
     title: bookDTO.title,
@@ -35,7 +35,7 @@ function convertGetBookDTOToBook(bookDTO: GetBookDTO): Book {
   };
 }
 
-function convertBookToGetBookDTO(book: Partial<Book>): Partial<GetBookDTO> {
+function convertBookToBookDTO(book: Partial<Book>): Partial<BookDTO> {
   return {
     id: book.id,
     title: book.title,
@@ -65,7 +65,7 @@ async function getBooks(): Promise<Book[] | null> {
     .from("books")
     .select()
     .eq("created_by", user?.id)
-    .returns<GetBookDTO[]>();
+    .returns<BookDTO[]>();
 
   return data ? data.map((bookDTO) => convertGetBookDTOToBook(bookDTO)) : null;
 }
@@ -76,7 +76,7 @@ export async function getBookById(id: number): Promise<Book | null> {
     .from("books")
     .select()
     .eq("id", id)
-    .returns<GetBookDTO[]>();
+    .returns<BookDTO[]>();
 
   return data ? convertGetBookDTOToBook(data[0]) : null;
 }
@@ -95,4 +95,20 @@ async function createBook(book: Omit<Book, "id">): Promise<number | null> {
   return null;
 }
 
-export { getBooks, createBook };
+async function updateBook(book: Book) {
+  const supabase = await createClient();
+  const bookDTO = convertBookToBookDTO(book);
+  const { error } = await supabase
+    .from("books")
+    .update(bookDTO)
+    .eq("id", book.id);
+  return error;
+}
+
+async function deleteBook(id: number) {
+  const supabase = await createClient();
+  const { error } = await supabase.from("books").delete().eq("id", id);
+  return error;
+}
+
+export { getBooks, createBook, updateBook, deleteBook };
